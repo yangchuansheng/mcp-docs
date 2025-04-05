@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "willow",
-  "name": "Model Context Protocol",
+  "name": "MCP 中文指南",
   "colors": {
     "primary": "#09090b",
     "light": "#FAFAFA",
@@ -11,14 +11,14 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "文档",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "快速入门",
             "pages": [
               "introduction",
               {
-                "group": "Quickstart",
+                "group": "快速开始",
                 "pages": [
                   "quickstart/server",
                   "quickstart/client",
@@ -30,7 +30,7 @@
             ]
           },
           {
-            "group": "Tutorials",
+            "group": "教程",
             "pages": [
               "tutorials/building-mcp-with-llms",
               "docs/tools/debugging",
@@ -38,7 +38,7 @@
             ]
           },
           {
-            "group": "Concepts",
+            "group": "核心概念",
             "pages": [
               "docs/concepts/architecture",
               "docs/concepts/resources",
@@ -50,7 +50,7 @@
             ]
           },
           {
-            "group": "Development",
+            "group": "开发指南",
             "pages": [
               "development/updates",
               "development/roadmap",
@@ -120,6 +120,9 @@
       "label": "GitHub",
       "href": "https://github.com/modelcontextprotocol"
     }
+  },
+  "banner": {
+    "content": "🚀 Banner is live! [Learn more](mintlify.com)"
   },
   "seo": {
     "metatags": {

@@ -1,61 +1,61 @@
 ---
-title: "Prompts"
-description: "Create reusable prompt templates and workflows"
+title: "提示词"
+description: "创建可复用的提示词和工作流"
 ---
 
-Prompts enable servers to define reusable prompt templates and workflows that clients can easily surface to users and LLMs. They provide a powerful way to standardize and share common LLM interactions.
+提示词（**Prompts**）使服务器能够定义可复用的模板和工作流，客户端可以便捷地将其呈现给用户和大语言模型（LLM）。这为标准化和共享常见的 LLM 交互提供了强大方式。
 
 <Note>
-  Prompts are designed to be **user-controlled**, meaning they are exposed from servers to clients with the intention of the user being able to explicitly select them for use.
+  提示词设计为**用户可控**的，即它们从服务器暴露给客户端后，用户可以明确选择是否使用它们。
 </Note>
 
-## Overview
+## 概述
 
-Prompts in MCP are predefined templates that can:
-- Accept dynamic arguments
-- Include context from resources
-- Chain multiple interactions
-- Guide specific workflows
-- Surface as UI elements (like slash commands)
+MCP 中的提示词是预定义模板，具有以下特点：
+- 可接受动态参数
+- 能包含来自资源的上下文
+- 可链接多个交互步骤
+- 能引导特定工作流程
+- 可作为 UI 元素呈现（如斜杠命令）
 
-## Prompt structure
+## 提示词结构
 
-Each prompt is defined with:
+每个提示词的定义结构如下：
 
 ```typescript
 {
-  name: string;              // Unique identifier for the prompt
-  description?: string;      // Human-readable description
-  arguments?: [              // Optional list of arguments
+  name: string;              // 提示词的唯一标识符
+  description?: string;      // 人类可读的描述信息
+  arguments?: [              // 可选的参数列表
     {
-      name: string;          // Argument identifier
-      description?: string;  // Argument description
-      required?: boolean;    // Whether argument is required
+      name: string;          // 参数标识符
+      description?: string;  // 参数描述信息
+      required?: boolean;    // 参数是否为必需
     }
   ]
 }
 ```
 
-## Discovering prompts
+## 发现提示词
 
-Clients can discover available prompts through the `prompts/list` endpoint:
+客户端可通过 `prompts/list` 接口发现可用的提示词：
 
 ```typescript
-// Request
+// 请求
 {
   method: "prompts/list"
 }
 
-// Response
+// 响应
 {
   prompts: [
     {
       name: "analyze-code",
-      description: "Analyze code for potential improvements",
+      description: "分析代码并提供改进建议",
       arguments: [
         {
           name: "language",
-          description: "Programming language",
+          description: "编程语言",
           required: true
         }
       ]
@@ -64,12 +64,12 @@ Clients can discover available prompts through the `prompts/list` endpoint:
 }
 ```
 
-## Using prompts
+## 使用提示词
 
-To use a prompt, clients make a `prompts/get` request:
+要使用提示词，客户端需要发送 `prompts/get` 请求：
 
 ```typescript
-// Request
+// 请求
 {
   method: "prompts/get",
   params: {
@@ -80,47 +80,47 @@ To use a prompt, clients make a `prompts/get` request:
   }
 }
 
-// Response
+// 响应
 {
-  description: "Analyze Python code for potential improvements",
+  description: "分析 Python 代码并提供改进建议",
   messages: [
     {
       role: "user",
       content: {
         type: "text",
-        text: "Please analyze the following Python code for potential improvements:\n\n```python\ndef calculate_sum(numbers):\n    total = 0\n    for num in numbers:\n        total = total + num\n    return total\n\nresult = calculate_sum([1, 2, 3, 4, 5])\nprint(result)\n```"
+        text: "请分析以下 Python 代码并提供潜在的改进建议：\n\n```python\ndef calculate_sum(numbers):\n    total = 0\n    for num in numbers:\n        total = total + num\n    return total\n\nresult = calculate_sum([1, 2, 3, 4, 5])\nprint(result)\n```"
       }
     }
   ]
 }
 ```
 
-## Dynamic prompts
+## 动态提示词
 
-Prompts can be dynamic and include:
+提示词可以是动态的，包含以下功能：
 
-### Embedded resource context
+### 嵌入资源上下文
 
 ```json
 {
   "name": "analyze-project",
-  "description": "Analyze project logs and code",
+  "description": "分析项目日志和代码",
   "arguments": [
     {
       "name": "timeframe",
-      "description": "Time period to analyze logs",
+      "description": "分析日志的时间段",
       "required": true
     },
     {
       "name": "fileUri",
-      "description": "URI of code file to review",
+      "description": "要审查的代码文件 URI",
       "required": true
     }
   ]
 }
 ```
 
-When handling the `prompts/get` request:
+处理 `prompts/get` 请求的示例：
 
 ```json
 {
@@ -129,7 +129,7 @@ When handling the `prompts/get` request:
       "role": "user",
       "content": {
         "type": "text",
-        "text": "Analyze these system logs and the code file for any issues:"
+        "text": "分析这些系统日志和代码文件中的任何问题："
       }
     },
     {
@@ -158,7 +158,7 @@ When handling the `prompts/get` request:
 }
 ```
 
-### Multi-step workflows
+### 多步骤工作流
 
 ```typescript
 const debugWorkflow = {
@@ -169,21 +169,21 @@ const debugWorkflow = {
         role: "user",
         content: {
           type: "text",
-          text: `Here's an error I'm seeing: ${error}`
+          text: `我遇到了这个错误：${error}`
         }
       },
       {
         role: "assistant",
         content: {
           type: "text",
-          text: "I'll help analyze this error. What have you tried so far?"
+          text: "我来帮你分析这个错误。你目前已经尝试了哪些解决方法？"
         }
       },
       {
         role: "user",
         content: {
           type: "text",
-          text: "I've tried restarting the service, but the error persists."
+          text: "我已尝试重启服务，但错误仍然存在。"
         }
       }
     ];
@@ -191,9 +191,9 @@ const debugWorkflow = {
 };
 ```
 
-## Example implementation
+## 实现示例
 
-Here's a complete example of implementing prompts in an MCP server:
+以下是在 MCP 服务器中实现提示词的完整示例：
 
 <Tabs>
   <Tab title="TypeScript">
@@ -207,27 +207,27 @@ Here's a complete example of implementing prompts in an MCP server:
     const PROMPTS = {
       "git-commit": {
         name: "git-commit",
-        description: "Generate a Git commit message",
+        description: "生成 Git 提交信息",
         arguments: [
           {
             name: "changes",
-            description: "Git diff or description of changes",
+            description: "Git diff 或更改描述",
             required: true
           }
         ]
       },
       "explain-code": {
         name: "explain-code",
-        description: "Explain how code works",
+        description: "解释代码的工作原理",
         arguments: [
           {
             name: "code",
-            description: "Code to explain",
+            description: "需要解释的代码",
             required: true
           },
           {
             name: "language",
-            description: "Programming language",
+            description: "编程语言",
             required: false
           }
         ]
@@ -243,18 +243,18 @@ Here's a complete example of implementing prompts in an MCP server:
       }
     });
 
-    // List available prompts
+    // 列出所有可用的提示词
     server.setRequestHandler(ListPromptsRequestSchema, async () => {
       return {
         prompts: Object.values(PROMPTS)
       };
     });
 
-    // Get specific prompt
+    // 获取指定的提示词
     server.setRequestHandler(GetPromptRequestSchema, async (request) => {
       const prompt = PROMPTS[request.params.name];
       if (!prompt) {
-        throw new Error(`Prompt not found: ${request.params.name}`);
+        throw new Error(`未找到提示词：${request.params.name}`);
       }
 
       if (request.params.name === "git-commit") {
@@ -264,7 +264,7 @@ Here's a complete example of implementing prompts in an MCP server:
               role: "user",
               content: {
                 type: "text",
-                text: `Generate a concise but descriptive commit message for these changes:\n\n${request.params.arguments?.changes}`
+                text: `为以下更改生成简洁且描述性强的提交信息：\n\n${request.params.arguments?.changes}`
               }
             }
           ]
@@ -272,21 +272,21 @@ Here's a complete example of implementing prompts in an MCP server:
       }
 
       if (request.params.name === "explain-code") {
-        const language = request.params.arguments?.language || "Unknown";
+        const language = request.params.arguments?.language || "未知";
         return {
           messages: [
             {
               role: "user",
               content: {
                 type: "text",
-                text: `Explain how this ${language} code works:\n\n${request.params.arguments?.code}`
+                text: `解释这段 ${language} 代码的工作原理：\n\n${request.params.arguments?.code}`
               }
             }
           ]
         };
       }
 
-      throw new Error("Prompt implementation not found");
+      throw new Error("未找到提示词的实现");
     });
     ```
   </Tab>
@@ -295,38 +295,38 @@ Here's a complete example of implementing prompts in an MCP server:
     from mcp.server import Server
     import mcp.types as types
 
-    # Define available prompts
+    # 定义可用的提示词
     PROMPTS = {
         "git-commit": types.Prompt(
             name="git-commit",
-            description="Generate a Git commit message",
+            description="生成 Git 提交信息",
             arguments=[
                 types.PromptArgument(
                     name="changes",
-                    description="Git diff or description of changes",
+                    description="Git diff 或更改描述",
                     required=True
                 )
             ],
         ),
         "explain-code": types.Prompt(
             name="explain-code",
-            description="Explain how code works",
+            description="解释代码的工作原理",
             arguments=[
                 types.PromptArgument(
                     name="code",
-                    description="Code to explain",
+                    description="需要解释的代码",
                     required=True
                 ),
                 types.PromptArgument(
                     name="language",
-                    description="Programming language",
+                    description="编程语言",
                     required=False
                 )
             ],
         )
     }
 
-    # Initialize server
+    # 初始化服务器
     app = Server("example-prompts-server")
 
     @app.list_prompts()
@@ -338,7 +338,7 @@ Here's a complete example of implementing prompts in an MCP server:
         name: str, arguments: dict[str, str] | None = None
     ) -> types.GetPromptResult:
         if name not in PROMPTS:
-            raise ValueError(f"Prompt not found: {name}")
+            raise ValueError(f"未找到提示词：{name}")
 
         if name == "git-commit":
             changes = arguments.get("changes") if arguments else ""
@@ -348,8 +348,8 @@ Here's a complete example of implementing prompts in an MCP server:
                         role="user",
                         content=types.TextContent(
                             type="text",
-                            text=f"Generate a concise but descriptive commit message "
-                            f"for these changes:\n\n{changes}"
+                            text=f"为以下更改生成简洁且描述性强的提交信息："
+                            f"\n\n{changes}"
                         )
                     )
                 ]
@@ -357,69 +357,69 @@ Here's a complete example of implementing prompts in an MCP server:
 
         if name == "explain-code":
             code = arguments.get("code") if arguments else ""
-            language = arguments.get("language", "Unknown") if arguments else "Unknown"
+            language = arguments.get("language", "未知") if arguments else "未知"
             return types.GetPromptResult(
                 messages=[
                     types.PromptMessage(
                         role="user",
                         content=types.TextContent(
                             type="text",
-                            text=f"Explain how this {language} code works:\n\n{code}"
+                            text=f"解释这段 {language} 代码的工作原理：\n\n{code}"
                         )
                     )
                 ]
             )
 
-        raise ValueError("Prompt implementation not found")
+        raise ValueError("未找到提示词的实现")
     ```
   </Tab>
 </Tabs>
 
-## Best practices
+## 最佳实践
 
-When implementing prompts:
+实现提示词时，应遵循以下最佳实践：
 
-1. Use clear, descriptive prompt names
-2. Provide detailed descriptions for prompts and arguments
-3. Validate all required arguments
-4. Handle missing arguments gracefully
-5. Consider versioning for prompt templates
-6. Cache dynamic content when appropriate
-7. Implement error handling
-8. Document expected argument formats
-9. Consider prompt composability
-10. Test prompts with various inputs
+1. 使用清晰、描述性的提示词名称
+2. 为提示词和参数提供详细的描述说明
+3. 验证所有必需参数
+4. 优雅地处理缺失参数情况
+5. 考虑提示词的版本控制机制
+6. 适当缓存动态内容以提高性能
+7. 实现完善的错误处理机制
+8. 文档化预期的参数格式要求
+9. 考虑提示词的组合使用场景
+10. 使用多种输入场景测试提示词
 
-## UI integration
+## UI 集成
 
-Prompts can be surfaced in client UIs as:
+提示词可在客户端 UI 中以多种形式呈现：
 
-- Slash commands
-- Quick actions
-- Context menu items
-- Command palette entries
-- Guided workflows
-- Interactive forms
+- 斜杠命令
+- 快捷操作按钮
+- 上下文菜单项
+- 命令面板选项
+- 引导式工作流程
+- 交互式表单界面
 
-## Updates and changes
+## 更新和变更
 
-Servers can notify clients about prompt changes:
+服务器可通过以下方式通知客户端提示词的变更：
 
-1. Server capability: `prompts.listChanged`
-2. Notification: `notifications/prompts/list_changed`
-3. Client re-fetches prompt list
+1. 服务器能力：`prompts.listChanged`
+2. 通知机制：`notifications/prompts/list_changed`
+3. 客户端接收通知后重新获取提示词列表
 
-## Security considerations
+## 安全注意事项
 
-When implementing prompts:
+实现提示词时，应重点考虑以下安全因素：
 
-- Validate all arguments
-- Sanitize user input
-- Consider rate limiting
-- Implement access controls
-- Audit prompt usage
-- Handle sensitive data appropriately
-- Validate generated content
-- Implement timeouts
-- Consider prompt injection risks
-- Document security requirements
+- 全面验证所有参数内容
+- 严格清理用户输入数据
+- 实施合理的速率限制策略
+- 建立完善的访问控制机制
+- 建立提示词使用的审计日志
+- 谨慎处理敏感数据信息
+- 验证模型生成的内容安全性
+- 实现请求处理的超时机制
+- 防范可能的提示注入攻击
+- 详细记录安全相关要求
